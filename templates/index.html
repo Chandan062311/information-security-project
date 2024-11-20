@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow animate__animated animate__fadeIn">
+            <div class="card-header text-center bg-primary text-white">
+                <h2><i class="fas fa-lock"></i> AI-Powered Information Security</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="operation" class="form-label">Operation:</label>
+                        <select name="operation" id="operation" class="form-select" required data-bs-toggle="tooltip" data-bs-placement="right" title="Choose to Encrypt or Decrypt">
+                            <option value="">Select Operation</option>
+                            <option value="encrypt">Encrypt</option>
+                            <option value="decrypt">Decrypt</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select an operation.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="algorithm" class="form-label">Algorithm:</label>
+                        <select name="algorithm" id="algorithm" class="form-select" onchange="toggleFields()" required data-bs-toggle="tooltip" data-bs-placement="right" title="Select the encryption/decryption algorithm">
+                            <option value="">Select Algorithm</option>
+                            <option value="caesar">Caesar Cipher</option>
+                            <option value="aes">AES</option>
+                            <option value="des">DES</option>
+                            <option value="rsa">RSA</option>
+                            <option value="sha1">SHA1 Hash</option>
+                            <option value="modified">Modified Algorithm</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select an algorithm.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="text" class="form-label">Text:</label>
+                        <textarea name="text" id="text" class="form-control" rows="3" required data-bs-toggle="tooltip" data-bs-placement="right" title="Enter the text to encrypt or decrypt"></textarea>
+                        <div class="invalid-feedback">
+                            Please enter the text.
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="key-field">
+                        <label for="key" class="form-label">Key:</label>
+                        <input type="text" name="key" id="key" class="form-control" data-bs-toggle="tooltip" data-bs-placement="right" title="Enter the encryption/decryption key">
+                        <div class="invalid-feedback">
+                            Please enter the key.
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="shift-field">
+                        <label for="shift" class="form-label">Shift:</label>
+                        <input type="number" name="shift" id="shift" class="form-control" value="3" data-bs-toggle="tooltip" data-bs-placement="right" title="Enter the shift value for Caesar Cipher">
+                        <div class="invalid-feedback">
+                            Please enter a valid shift number.
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="private-key-field" style="display: none;">
+                        <label for="private_key" class="form-label">Private Key (RSA Decrypt):</label>
+                        <textarea name="private_key" id="private_key" class="form-control" rows="3" data-bs-toggle="tooltip" data-bs-placement="right" title="Enter your RSA private key for decryption"></textarea>
+                        <div class="invalid-feedback">
+                            Please enter the private key.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 animate__animated animate__pulse">Submit <i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to toggle form fields based on selected algorithm and operation
+function toggleFields() {
+    var algorithm = document.getElementById('algorithm').value;
+    var operation = document.getElementById('operation').value;
+    var keyField = document.getElementById('key-field');
+    var shiftField = document.getElementById('shift-field');
+    var privateKeyField = document.getElementById('private-key-field');
+
+    if (algorithm === 'caesar') {
+        keyField.style.display = 'none';
+        shiftField.style.display = 'block';
+    } else if (algorithm === 'sha1') {
+        keyField.style.display = 'none';
+        shiftField.style.display = 'none';
+    } else {
+        keyField.style.display = 'block';
+        shiftField.style.display = 'none';
+    }
+
+    if (algorithm === 'rsa' && operation === 'decrypt') {
+        privateKeyField.style.display = 'block';
+    } else {
+        privateKeyField.style.display = 'none';
+    }
+}
+
+// Initialize form validation
+(function () {
+    'use strict'
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+})();
+
+// Initialize fields on page load
+document.addEventListener('DOMContentLoaded', toggleFields);
+document.getElementById('algorithm').addEventListener('change', toggleFields);
+document.getElementById('operation').addEventListener('change', toggleFields);
+</script>
+{% endblock %}
